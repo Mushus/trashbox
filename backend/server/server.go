@@ -66,15 +66,15 @@ func createRouter(h Handler) (*echo.Echo, error) {
 	e.Use(session, logger, recover)
 
 	// set up routings
-	e.GET("/login", handlize(h.GetLogin))
-	e.POST("/login", handlize(h.PostLogin))
-	e.GET("/logout", handlize(h.GetLogout))
+	e.GET("/!/login", handlize(h.GetLogin))
+	e.POST("/!/login", handlize(h.PostLogin))
+	e.GET("/!/logout", handlize(h.GetLogout))
 	e.GET("/", handlize(h.GetIndex))
 	e.GET("/:title", handlize(h.GetDocument))
 	e.PUT("/:title", handlize(auth(h.PutDocument)))
-	e.GET("/assets/:id", handlize(h.GetAsset))
-	e.GET("/assets/:id/:format", handlize(h.GetFormatedAsset))
-	e.POST("/assets", handlize(auth(h.UploadAsset)))
+	e.GET("/@/:id", handlize(h.GetAsset))
+	e.GET("/@/:id/:format", handlize(h.GetFormatedAsset))
+	e.POST("/@/", handlize(auth(h.UploadAsset)))
 
 	return e, nil
 }

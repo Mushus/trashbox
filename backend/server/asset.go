@@ -19,7 +19,7 @@ var (
 	// IDFormat reprecents the format of ID.
 	IDFormat = regexp.MustCompile("^[0-9a-v]{20}$")
 	// FormatFormat is
-	AssetFormatFormat = regexp.MustCompile("^[0-9a-zA-Z_\\-]+$")
+	AssetFormatFormat = regexp.MustCompile("^[@0-9a-zA-Z_\\-]+$")
 )
 
 const (
@@ -65,12 +65,12 @@ func NewFileAssetRepository() *FileAssetRepository {
 	}
 }
 
-// GetFormatedInStream gets asset by id
+// Get gets asset by id
 func (f FileAssetRepository) Get(id string) (Asset, error) {
 	return f.getFormated(id, OfirinalFileName)
 }
 
-// GetFormatedInStream gets formated asset by id
+// getFormated gets formated asset by id
 func (f FileAssetRepository) getFormated(id, format string) (Asset, error) {
 	if !f.ValidateID(id) || !f.ValidateFormat(format) {
 		return Asset{}, AssetNotFound
