@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { IState } from '~/modules';
-import { AddAction, InputAction } from '~/modules/todo';
+import { IState } from '~/reducers';
+import { AddAction, InputAction } from '~/reducers/todo';
 
 interface StateProp {
 	text: string;

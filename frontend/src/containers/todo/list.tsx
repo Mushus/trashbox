@@ -1,8 +1,8 @@
 import * as React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
-import { IState } from '~/modules';
-import { FinishAction } from '~/modules/todo';
+import { IState } from '~/reducers';
+import { FinishAction } from '~/reducers/todo';
 
 interface StateProp {
 	inProgress: string[];
