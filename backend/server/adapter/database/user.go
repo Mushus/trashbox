@@ -2,7 +2,7 @@ package database
 
 import (
 	"github.com/Mushus/trashbox/backend/server/app/property"
-	"github.com/Mushus/trashbox/backend/server/app/repository"
+	"github.com/Mushus/trashbox/backend/server/app/user"
 	"github.com/jinzhu/gorm"
 )
 
@@ -10,7 +10,7 @@ type UserDatastore struct {
 	db *gorm.DB
 }
 
-func ProvideUserDatastore(db *gorm.DB) repository.User {
+func ProvideUserDatastore(db *gorm.DB) user.Repository {
 	return &UserDatastore{
 		db: db,
 	}

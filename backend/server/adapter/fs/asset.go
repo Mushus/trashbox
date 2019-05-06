@@ -1,14 +1,14 @@
 package fs
 
 import (
+	"github.com/Mushus/trashbox/backend/server/app/asset"
 	"github.com/Mushus/trashbox/backend/server/app/property"
-	"github.com/Mushus/trashbox/backend/server/app/repository"
 )
 
 type AssetDatastore struct {
 }
 
-func ProvideAssetDatastore() repository.Asset {
+func ProvideAssetDatastore() asset.Repository {
 	return &AssetDatastore{}
 }
 

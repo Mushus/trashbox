@@ -1,12 +1,10 @@
-//go:generate mockgen -source ./repository.go -destination ./repository_mock.go -package repository
-
-package repository
+package cache
 
 import (
 	"github.com/Mushus/trashbox/backend/server/app/asset"
 )
 
-type AssetCache interface {
+type Repository interface {
 	GetCache(id, format string) (asset.Asset, error)
 	PutCache(asset asset.Asset, format string) error
 	PurgeAll(id string) error

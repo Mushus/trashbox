@@ -1,8 +1,8 @@
 package database
 
 import (
+	"github.com/Mushus/trashbox/backend/server/app/document"
 	"github.com/Mushus/trashbox/backend/server/app/property"
-	"github.com/Mushus/trashbox/backend/server/app/repository"
 	"github.com/jinzhu/gorm"
 )
 
@@ -10,7 +10,7 @@ type DocumentDatastore struct {
 	db *gorm.DB
 }
 
-func ProvideDocumentDatastore(db *gorm.DB) repository.Document {
+func ProvideDocumentDatastore(db *gorm.DB) document.Repository {
 	return &DocumentDatastore{
 		db: db,
 	}

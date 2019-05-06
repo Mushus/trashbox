@@ -12,11 +12,11 @@ var (
 
 // Service ユーザーサービス
 type Service struct {
-	repository repository.User
+	repository Repository
 }
 
 // ProvideService ユーザーサービスを作成する
-func ProvideService(u repository.User) *Service {
+func ProvideService(u Repository) *Service {
 	return &Service{
 		repository: u,
 	}

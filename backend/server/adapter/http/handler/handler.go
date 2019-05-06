@@ -7,7 +7,8 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	"github.com/Mushus/trashbox/backend/server/app/repository"
+	"github.com/Mushus/trashbox/backend/server/app/asset"
+	"github.com/Mushus/trashbox/backend/server/app/document"
 	"github.com/gorilla/sessions"
 )
 
@@ -18,12 +19,12 @@ type Handlers struct {
 
 // Handler handler
 type Handler struct {
-	document repository.Document
-	asset    repository.Asset
+	document document.Repository
+	asset    asset.Repository
 }
 
 // ProvideHandler ハンドラを生成する
-func ProvideHandler(document repository.Document, asset repository.Asset) Handler {
+func ProvideHandler(document document.Repository, asset asset.Repository) Handler {
 	return Handler{
 		document: document,
 		asset:    asset,

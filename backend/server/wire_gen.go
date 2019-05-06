@@ -25,13 +25,13 @@ func InitializeServer() (*Server, func(), error) {
 	if err != nil {
 		return nil, nil, err
 	}
-	repositoryUser := database.ProvideUserDatastore(db)
-	service := user.ProvideService(repositoryUser)
+	repository := database.ProvideUserDatastore(db)
+	service := user.ProvideService(repository)
 	appApp := app.ProvideApp(service)
 	session := handler.ProvideSession(appApp)
-	document := database.ProvideDocumentDatastore(db)
-	asset := fs.ProvideAssetDatastore()
-	handlerHandler := handler.ProvideHandler(document, asset)
+	documentRepository := database.ProvideDocumentDatastore(db)
+	assetRepository := fs.ProvideAssetDatastore()
+	handlerHandler := handler.ProvideHandler(documentRepository, assetRepository)
 	handlers := handler.Handlers{
 		Session: session,
 		Handler: handlerHandler,
