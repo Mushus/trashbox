@@ -1,11 +1,34 @@
-package server
+package handler
 
 import (
 	"net/http"
 
-	"github.com/gorilla/sessions"
+	"github.com/Mushus/trashbox/backend/server/adapter/http/middleware"
+
 	"github.com/labstack/echo/v4"
+
+	"github.com/Mushus/trashbox/backend/server/app/repository"
+	"github.com/gorilla/sessions"
 )
+
+type Handlers struct {
+	Session Session
+	Handler Handler
+}
+
+// Handler handler
+type Handler struct {
+	document repository.Document
+	asset    repository.Asset
+}
+
+// ProvideHandler ハンドラを生成する
+func ProvideHandler(document repository.Document, asset repository.Asset) Handler {
+	return Handler{
+		document: document,
+		asset:    asset,
+	}
+}
 
 // Context represents the context of the current HTTP request
 type Context struct {
@@ -17,12 +40,12 @@ type Context struct {
 // HandlerFunc is define a function to serve HTTP requests
 type HandlerFunc func(Context) error
 
-func handlize(fn HandlerFunc) echo.HandlerFunc {
+func Handlize(fn HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		userID := -1
 		isLoggedIn := false
 
-		sess, err := getSession(c)
+		sess, err := middleware.GetSession(c)
 		if err == nil {
 			userID = getUserIDFromSession(sess)
 			isLoggedIn = userID != -1
@@ -36,7 +59,7 @@ func handlize(fn HandlerFunc) echo.HandlerFunc {
 	}
 }
 
-func auth(next HandlerFunc) HandlerFunc {
+func Auth(next HandlerFunc) HandlerFunc {
 	return func(c Context) error {
 		if !c.IsLoggedIn {
 			return c.String(http.StatusUnauthorized, "unauthorized")

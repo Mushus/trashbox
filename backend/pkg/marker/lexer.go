@@ -33,6 +33,7 @@ func (l *lexer) start() error {
 	for {
 		switch {
 		case l.parseWhiteSpace():
+		case l.parseLineBreak():
 		case l.peek() == eof:
 			return nil
 		case l.parseHeading():
@@ -111,7 +112,7 @@ func (l *lexer) clear() {
 func (l *lexer) parseWhiteSpace() bool {
 	for i := 0; ; i++ {
 		switch l.next() {
-		case ' ', '\n', '\r':
+		case ' ', '\t':
 		default:
 			if i == 0 {
 				l.rollback()
@@ -121,6 +122,20 @@ func (l *lexer) parseWhiteSpace() bool {
 			l.emit(TokenTypWhiteSpace)
 			return true
 		}
+	}
+}
+
+func (l *lexer) parseLineBreak() bool {
+	switch l.next() {
+	case '\n':
+		l.emit(TokenTypLineBreak)
+	case '\r':
+		if l.next() != '\n' {
+			l.rewind()
+		}
+		l.emit(TokenTypLineBreak)
+	default:
+		return false
 	}
 }
 
@@ -154,7 +169,7 @@ func (l *lexer) parseHashTag() bool {
 	l.emit(TokenTypHashTag)
 	for i := 0; ; i++ {
 		switch l.next() {
-		case ' ', '\n', '\r', eof:
+		case ' ', '\t', '\n', '\r', eof:
 			l.rewind()
 			l.emit(TokenTypHashTagText)
 			return true
@@ -195,7 +210,7 @@ const (
 	TokenTypWhiteSpace
 	// TokenTypHeading 見出し
 	TokenTypHeading
-	// TokenTypHash ハッシュタグ
+	// TokenTypHashTag ハッシュタグ
 	TokenTypHashTag
 	// TokenTypHashTagText ハッシュタグテキスト
 	TokenTypHashTagText

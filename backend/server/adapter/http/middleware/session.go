@@ -1,4 +1,4 @@
-package server
+package middleware
 
 import (
 	"github.com/averagesecurityguy/random"
@@ -12,11 +12,10 @@ import (
 // SessionMaxAge is max age of sessions
 const SessionMaxAge = 60 * 60 * 24 * 100
 
-// SessionKeyUserID is used to obtain user ID from the session
-const SessionKeyUserID = "userId"
+type SessionMiddleware echo.MiddlewareFunc
 
 // NewSession is coreate in-memory session
-func NewSession() (echo.MiddlewareFunc, error) {
+func NewSession() (SessionMiddleware, error) {
 	secretKey, err := random.Token()
 	if err != nil {
 		return nil, xerrors.Errorf("cannot create session secret key: %w", err)
@@ -26,7 +25,7 @@ func NewSession() (echo.MiddlewareFunc, error) {
 	if err != nil {
 		return nil, err
 	}
-	return session.Middleware(store), nil
+	return SessionMiddleware(session.Middleware(store)), nil
 }
 
 // SessionModel represent a session instance
@@ -34,11 +33,11 @@ type SessionModel struct {
 	UserID string
 }
 
-func getSession(c echo.Context) (*sessions.Session, error) {
+func GetSession(c echo.Context) (*sessions.Session, error) {
 	return session.Get("session", c)
 }
 
-func saveSession(c echo.Context, sess *sessions.Session) error {
+func SaveSession(c echo.Context, sess *sessions.Session) error {
 	sess.Options = &sessions.Options{
 		Path:     "/",
 		MaxAge:   SessionMaxAge,
