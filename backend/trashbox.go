@@ -9,10 +9,11 @@ import (
 )
 
 func main() {
-	s, err := server.InitializeServer()
+	s, cleanup, err := server.InitializeServer()
 	if err != nil {
 		log.Fatalf("failed to initialize app: %v", err)
 	}
+	defer cleanup()
 
 	s.Start()
 }

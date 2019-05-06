@@ -19,6 +19,6 @@ func ProvideDocumentDatastore(db *gorm.DB) repository.Document {
 func (d DocumentDatastore) Get(id string) (*property.Document, error) {
 	return nil, nil
 }
-func (d DocumentDatastore) Put(doc property.Document) error {
+func (d DocumentDatastore) Put(doc *property.Document) error {
 	return nil
 }

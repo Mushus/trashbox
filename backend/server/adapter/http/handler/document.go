@@ -3,6 +3,8 @@ package handler
 import (
 	"net/http"
 
+	"golang.org/x/xerrors"
+
 	"github.com/Mushus/trashbox/backend/server/app/property"
 
 	"github.com/Mushus/trashbox/backend/server/adapter/http/template"
@@ -18,8 +20,8 @@ func (h Handler) GetIndex(c Context) error {
 func (h Handler) GetDocument(c Context) error {
 	title := c.Param("title")
 
-	doc, err := h.document.Get(title)
-	if err == document.DocumentNotFound {
+	_, err := h.document.Get(title)
+	if xerrors.Is(err, document.ErrDocumentNotFound) {
 		if !c.IsLoggedIn {
 			return c.String(http.StatusNotFound, "document not found")
 		}
@@ -51,12 +53,12 @@ func (h Handler) PutDocument(c Context) error {
 		return c.String(http.StatusBadRequest, "Bad Request")
 	}
 
-	doc := document.Document{
+	doc := property.Document{
 		Title:   title,
 		Content: prm.Content,
 	}
 
-	if err := h.document.Put(property.Document{}); err != nil {
+	if err := h.document.Put(&doc); err != nil {
 		return err
 	}
 	return c.JSON(http.StatusOK, struct{}{})

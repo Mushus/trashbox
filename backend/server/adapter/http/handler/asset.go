@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"net/url"
 
+	"github.com/Mushus/trashbox/backend/server/app/property"
+
 	"github.com/Mushus/trashbox/backend/server/app/asset"
 	"github.com/labstack/echo/v4"
 )
@@ -21,11 +23,13 @@ func (h Handler) UploadAsset(c Context) error {
 	if err != nil {
 		return err
 	}
-	sa := asset.Asset{
+
+	sa := property.Asset{
 		Stream:      file,
 		FileName:    fileName,
 		ContentType: contentType,
 	}
+
 	id, err := h.asset.Add(sa)
 	if err != nil {
 		return err
@@ -36,7 +40,7 @@ func (h Handler) UploadAsset(c Context) error {
 	return c.String(http.StatusOK, id)
 }
 
-func (h Handler) decolateAssetResponse(c Context, asset asset.Asset) error {
+func (h Handler) decolateAssetResponse(c Context, asset *property.Asset) error {
 	resp := c.Response()
 	header := resp.Header()
 	// for download
@@ -63,7 +67,7 @@ func (h Handler) GetAsset(c Context) error {
 	defer a.Close()
 
 	h.decolateAssetResponse(c, a)
-	return c.Stream(http.StatusOK, a.ContentType, a)
+	return c.Stream(http.StatusOK, a.ContentType, a.Stream)
 }
 
 // GetFormatedAsset is a handler
@@ -81,5 +85,5 @@ func (h Handler) GetFormatedAsset(c Context) error {
 	defer a.Close()
 
 	h.decolateAssetResponse(c, a)
-	return c.Stream(http.StatusOK, a.ContentType, a)
+	return c.Stream(http.StatusOK, a.ContentType, a.Stream)
 }

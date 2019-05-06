@@ -5,10 +5,6 @@ import (
 	"golang.org/x/xerrors"
 )
 
-var (
-	ErrDocumentNotFound = xerrors.New("document not found")
-)
-
 type Service struct {
 	repository repository.Document
 }
