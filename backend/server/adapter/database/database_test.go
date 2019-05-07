@@ -1,9 +1,11 @@
 package database_test
 
-import (
+/*import (
 	"testing"
 
-	"github.com/Mushus/trashbox/backend/server"
+	"github.com/Mushus/trashbox/backend/server/adapter/database"
+	"github.com/jinzhu/gorm"
+
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -40,13 +42,14 @@ func TestVerifyUser(t *testing.T) {
 		},
 	}
 
-	db, err := server.NewDB(":memory:")
+	db, err := gorm.Open("sqlite3", ":memory:")
 	if err != nil {
 		t.Fatalf("%v", err)
 	}
+	repository := database.ProvideUserDatastore(db)
 
 	for _, row := range table {
-		_, ok, err := db.VerifyUser(row.in.login, row.in.password)
+		_, ok, err := repository.FindByLogin(row.in.login, row.in.password)
 		if err != nil {
 			t.Fatalf("%v", err)
 		}
@@ -55,4 +58,4 @@ func TestVerifyUser(t *testing.T) {
 			t.Fatalf("ok is %v, expect %v: user = %#v", ok, row.out, row.in)
 		}
 	}
-}
+}*/

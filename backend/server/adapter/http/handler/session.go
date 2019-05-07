@@ -3,7 +3,10 @@ package handler
 import (
 	"net/http"
 
+	"github.com/Mushus/trashbox/backend/server/app/user"
+
 	"github.com/Mushus/trashbox/backend/server/app"
+	"golang.org/x/xerrors"
 
 	"github.com/Mushus/trashbox/backend/server/adapter/http/middleware"
 	"github.com/Mushus/trashbox/backend/server/adapter/http/validator"
@@ -52,14 +55,16 @@ func (s Session) PostLogin(c Context) error {
 		})
 	}
 
-	user, err := s.app.VerifyUser(prm.Login, prm.Password)
-	if err != nil {
+	u, err := s.app.VerifyUser(prm.Login, prm.Password)
+	if xerrors.Is(err, user.ErrInvalidLoginOrPassword) {
+		return c.Render(http.StatusOK, template.TmplLogin, template.LoginView{})
+	} else if err != nil {
 		return err
 	}
 
 	// success login
 	sess, _ := middleware.GetSession(c)
-	sess.Values[SessionKeyUserID] = user.ID()
+	sess.Values[SessionKeyUserID] = u.ID()
 	if err := middleware.SaveSession(c, sess); err != nil {
 		return err
 	}

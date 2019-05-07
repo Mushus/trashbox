@@ -1,13 +1,10 @@
 package user
 
 import (
-	"github.com/Mushus/trashbox/backend/server/app/property"
-	"github.com/Mushus/trashbox/backend/server/app/repository"
-	"golang.org/x/xerrors"
-)
+	"fmt"
 
-var (
-	ErrInvalidLoginOrPassword = xerrors.New("invalid login or password")
+	"github.com/Mushus/trashbox/backend/server/app/property"
+	"golang.org/x/xerrors"
 )
 
 // Service ユーザーサービス
@@ -25,28 +22,54 @@ func ProvideService(u Repository) *Service {
 // VerifyUser ユーザーが正しいか検証する
 // User が正しい場合はそのユーザーを返す
 func (s Service) VerifyUser(login, password string) (*User, error) {
-	userProp, err := s.repository.FindByLogin(login)
+	user, err := s.repository.FindByLogin(login)
 	if err != nil {
-		if xerrors.Is(err, repository.ErrUserNotFound) {
+		if xerrors.Is(err, ErrUserNotFound) {
 			return nil, ErrInvalidLoginOrPassword
 		}
-		return nil, err
+		return nil, xerrors.Errorf("failed to find user: %w", err)
 	}
-
-	user, err := NewUser(*userProp)
-	if err != nil {
-		// NOTE: 実装上ここには到達しない
-		return nil, nil
-	}
+	fmt.Printf("%#v", user)
 
 	if !user.VerifyPassword(password) {
 		// NOTE: サイドチャンネル攻撃に弱い気がする
+		// 最大経過数待機か?
 		return nil, ErrInvalidLoginOrPassword
 	}
 
 	return user, nil
 }
 
-func (s Service) AddUser(user *property.User) error {
-	return nil
+// AddUser ユーザーを追加する
+func (s Service) AddUser(user *User) error {
+	return s.repository.Add(user)
+}
+
+func (s Service) AddUserIfNotExists(login, password string) (*User, error) {
+	{
+		// find exists user
+		user, err := s.repository.FindByLogin(login)
+		if user != nil {
+			return user, nil
+		}
+		if !xerrors.Is(err, ErrUserNotFound) {
+			return nil, xerrors.Errorf("failed to find user: %w", err)
+		}
+	}
+	{
+		// create new user
+		user, err := NewUser(property.User{
+			Login:    login,
+			Password: password,
+		})
+		if err != nil {
+			return nil, xerrors.Errorf("failed to create user: %w", err)
+		}
+
+		if err = s.repository.Add(&user); err != nil {
+			return nil, xerrors.Errorf("failed to create user: %w", err)
+		}
+
+		return &user, nil
+	}
 }

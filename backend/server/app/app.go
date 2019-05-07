@@ -22,9 +22,5 @@ func ProvideApp(userService *user.Service) *App {
 
 func (a App) VerifyUser(login, password string) (*user.User, error) {
 	// TODO: バリデーション
-	user, err := a.userService.VerifyUser(login, password)
-	if err != nil {
-		return nil, err
-	}
-	return user, nil
+	return a.userService.VerifyUser(login, password)
 }

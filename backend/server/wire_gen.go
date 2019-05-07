@@ -49,7 +49,8 @@ func InitializeServer() (*Server, func(), error) {
 		cleanup()
 		return nil, nil, err
 	}
-	server := ProvideServer(echo)
+	provisioner := database.ProvideProvisioner(db, service)
+	server := ProvideServer(echo, provisioner)
 	return server, func() {
 		cleanup()
 	}, nil

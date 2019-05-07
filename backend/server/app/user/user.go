@@ -8,14 +8,15 @@ import (
 
 // User ユーザー情報
 type User struct {
-	id       int64  `db:"id"`
-	login    string `db:"login"`
+	id    int64  `db:"id"`
+	login string `db:"login"`
+	// password express hashed password
 	password string `db:"password"`
 }
 
 // NewUser ユーザーを作成する
-func NewUser(prop property.User) (*User, error) {
-	u := &User{
+func NewUser(prop property.User) (User, error) {
+	u := User{
 		id:       prop.ID,
 		login:    prop.Login,
 		password: prop.HashedPassword,
@@ -60,6 +61,17 @@ func (u *User) ToProp() *property.User {
 	}
 }
 
+// ID is users identifer
 func (u *User) ID() int64 {
 	return u.id
+}
+
+// Login is users login identier
+func (u *User) Login() string {
+	return u.login
+}
+
+// Password is users hased password
+func (u *User) Password() string {
+	return u.password
 }

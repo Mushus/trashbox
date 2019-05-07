@@ -1,9 +1,11 @@
 package user
 
-import "github.com/Mushus/trashbox/backend/server/app/property"
-
-// Repository
+// Repository ユーザーを保存するリポジトリ
 type Repository interface {
-	FindByLogin(login string) (*property.User, error)
-	Add(user *property.User) error
+	// FindByLogin ログイン名が login なユーザーを探す。
+	// 見つかった場合, そのユーザーを返す
+	// 見つからなかった場合、 nil と ErrUserNotFound を返す
+	FindByLogin(login string) (*User, error)
+	// Add ユーザーを追加する
+	Add(user *User) error
 }

@@ -9,6 +9,7 @@ import (
 
 var DatabaseSet = wire.NewSet(
 	ProvideDB,
+	ProvideProvisioner,
 	ProvideDocumentDatastore,
 	ProvideUserDatastore,
 )

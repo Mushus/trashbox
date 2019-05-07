@@ -1,7 +1,6 @@
 package document
 
 import (
-	"github.com/Mushus/trashbox/backend/server/app/repository"
 	"golang.org/x/xerrors"
 )
 
@@ -18,7 +17,7 @@ func ProvideService(r Repository) *Service {
 func (s Service) RestoreDocument(title string) (*Document, error) {
 	prop, err := s.repository.Get(title)
 	if err != nil {
-		if xerrors.Is(err, repository.ErrDocumentNotFound) {
+		if xerrors.Is(err, ErrDocumentNotFound) {
 			return nil, ErrDocumentNotFound
 		}
 		return nil, xerrors.Errorf("failed to get Document: %w", err)

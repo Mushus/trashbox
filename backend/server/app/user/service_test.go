@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/Mushus/trashbox/backend/server/app/property"
-	"github.com/Mushus/trashbox/backend/server/app/repository"
 	"github.com/Mushus/trashbox/backend/server/app/user"
+	userMock "github.com/Mushus/trashbox/backend/testutil/user"
 	"github.com/golang/mock/gomock"
 	"golang.org/x/xerrors"
 )
@@ -43,14 +43,15 @@ func TestServiceVerifyUser(t *testing.T) {
 	}
 
 	for _, c := range cases {
-		r := repository.NewMockUser(ctrl)
+		r := userMock.NewMockRepository(ctrl)
 
 		var expectErr error
-		var expectUser property.User
+		var expectUser *user.User
 		if !c.validUser {
-			expectErr = repository.ErrUserNotFound
+			expectErr = user.ErrUserNotFound
 		} else {
-			expectUser = resultUser
+			u, _ := user.NewUser(resultUser)
+			expectUser = &u
 		}
 
 		r.
